@@ -1,0 +1,12 @@
+{
+  "title": "Scream",
+  "year": 1996,
+  "duration_min": 111,
+  "rating": 7.4,
+  "synopsis": "Un asesino enmascarado ataca en Woodsboro.",
+  "posterUrl": "https://example.com/posters/scream.jpg",
+  "producer": "Lionsgate",
+  "directors": [
+    "Wes Craven"
+  ]
+}

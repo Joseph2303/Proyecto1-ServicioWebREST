@@ -1,0 +1,12 @@
+{
+  "title": "Us",
+  "year": 2019,
+  "duration_min": 116,
+  "rating": 6.8,
+  "synopsis": "Una familia se enfrenta a sus dobles.",
+  "posterUrl": "https://example.com/posters/us.jpg",
+  "producer": "Blumhouse Productions",
+  "directors": [
+    "Jordan Peele"
+  ]
+}

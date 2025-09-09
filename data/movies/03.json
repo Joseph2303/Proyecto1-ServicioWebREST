@@ -1,0 +1,12 @@
+{
+  "title": "A Nightmare on Elm Street",
+  "year": 1984,
+  "duration_min": 91,
+  "rating": 7.4,
+  "synopsis": "Freddy Krueger acecha los sueños de adolescentes.",
+  "posterUrl": "https://example.com/posters/a-nightmare-on-elm-street.jpg",
+  "producer": "New Line Cinema",
+  "directors": [
+    "Wes Craven"
+  ]
+}

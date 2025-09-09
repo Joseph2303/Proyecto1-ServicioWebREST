@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catálogo de Películas de Terror</title>
+
+    <!-- En Vite, los assets en /frontend/public se sirven desde / -->
+    <!-- Si tu icono está en frontend/public/image/gritar.png, la ruta correcta es: -->
+    <link rel="icon" href="/image/gritar.png" />
+
+    <!-- Tipos para el título y detalles “terror” -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#0b0b12" />
+
+    <style>
+      :root{
+        --blood:#e50914;
+        --ink:#0b0b12;
+        --fog: rgba(255,255,255,.06);
+        --paper:#e8e8ea;
+      }
+      /* Pantalla de bienvenida */
+      #splash{
+        position:fixed; inset:0; z-index:9999;
+        display:grid; place-items:center;
+        padding: clamp(16px, 4vw, 32px);
+        color: var(--paper);
+        background:
+          radial-gradient(120% 140% at 50% -20%, #1a0b0d 0%, #0f0f16 45%, #090910 70%, #050509 100%);
+        overflow:hidden;
+        transition: opacity .6s ease, visibility .6s ease;
+      }
+      #splash::before{
+        /* neblina/grano sutil */
+        content:"";
+        position:absolute; inset:-20%;
+        background:
+          radial-gradient(100% 60% at 50% 30%, rgba(255,255,255,.02), transparent 60%),
+          repeating-linear-gradient(0deg, rgba(255,255,255,.015), rgba(255,255,255,.015) 2px, transparent 2px, transparent 4px);
+        filter: blur(6px);
+        animation: drift 18s linear infinite;
+        pointer-events:none;
+      }
+      #splash::after{
+        /* viñeta + “líneas” de cine antiguo */
+        content:"";
+        position:absolute; inset:0;
+        box-shadow: inset 0 0 140px 40px #000;
+        background:
+          repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 3px);
+        mix-blend-mode: overlay;
+        pointer-events:none;
+        opacity:.25;
+      }
+      @keyframes drift {
+        0% { transform: translate3d(-2%, -2%, 0) scale(1.05); }
+        50%{ transform: translate3d(2%, 2%, 0) scale(1.07); }
+        100%{ transform: translate3d(-2%, -2%, 0) scale(1.05); }
+      }
+
+      .splash-inner{
+        position:relative; z-index:1;
+        text-align:center;
+        max-width: 900px; width:100%;
+      }
+      .brand{
+        font-family: "UnifrakturCook", system-ui, serif;
+        font-size: clamp(40px, 6vw, 80px);
+        letter-spacing: .02em;
+        margin: 0 0 .2em 0;
+        color: var(--paper);
+        text-shadow: 0 2px 14px rgba(229,9,20,.18);
+        animation: flicker 3s infinite;
+      }
+      @keyframes flicker {
+        0%, 19%, 21%, 23%, 100% { filter: drop-shadow(0 0 18px rgba(229,9,20,.28)); opacity:1; }
+        20%, 22% { filter:none; opacity:.85; }
+        60% { opacity:.97; }
+      }
+      .tagline{
+        font-family: "Cinzel", ui-serif, serif;
+        font-weight: 600;
+        font-size: clamp(16px, 2.2vw, 22px);
+        color: #cfcfe6;
+        opacity:.9;
+        margin: 0 0 1.2rem 0;
+      }
+      .cut{
+        width:min(720px, 90%); margin: 0 auto 1.4rem auto;
+        height: 1px;
+        background:
+          linear-gradient(90deg, transparent, rgba(229,9,20,.6), transparent);
+        box-shadow: 0 0 18px rgba(229,9,20,.35);
+      }
+      .enter{
+        appearance:none;
+        border:none;
+        cursor:pointer;
+        font-weight:700;
+        letter-spacing:.02em;
+        padding: .9rem 1.2rem;
+        border-radius: 12px;
+        color:#fff;
+        background: linear-gradient(180deg, #3a0f14, #21080b);
+        border:1px solid rgba(229,9,20,.55);
+        box-shadow: 0 12px 30px rgba(229,9,20,.2), inset 0 0 0 1px rgba(255,255,255,.06);
+        transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease;
+      }
+      .enter:hover{ border-color: rgba(229,9,20,.85); box-shadow: 0 14px 34px rgba(229,9,20,.24), inset 0 0 0 1px rgba(255,255,255,.1); }
+      .enter:active{ transform: translateY(1px) scale(.995); }
+
+      .links{
+        margin-top:.75rem;
+        display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;
+        font-size:.95rem; opacity:.9;
+      }
+      .links a{ color:#cfcfe6; text-underline-offset: 3px; }
+      .blood{
+        display:inline-block; position:relative;
+        color: var(--blood);
+        text-shadow: 0 0 24px rgba(229,9,20,.25);
+      }
+      .blood::after{
+        /* gota de sangre */
+        content:"";
+        position:absolute; left:50%; transform: translateX(-50%);
+        top: 100%;
+        width: 6px; height: 14px; border-radius: 3px;
+        background: var(--blood);
+        box-shadow: 0 2px 10px rgba(229,9,20,.35);
+        animation: drip 3.6s ease-in-out infinite;
+      }
+      @keyframes drip {
+        0%   { opacity:0; transform: translate(-50%, -12px) scaleY(.2); }
+        15%  { opacity:1; }
+        80%  { opacity:1; transform: translate(-50%, 18px) scaleY(1.2); }
+        100% { opacity:0; transform: translate(-50%, 24px) scaleY(.6); }
+      }
+
+      /* Cerrar animación */
+      #splash.hide{ opacity:0; visibility:hidden; }
+
+      /* Respeta reduce motion */
+      @media (prefers-reduced-motion: reduce) {
+        #splash::before, .brand { animation: none !important; }
+      }
+
+      /* Evita que el #app parpadee debajo */
+      #app{ min-height:100vh; }
+    </style>
+  </head>
+  <body>
+    <!-- Bienvenida terrorífica -->
+    <div id="splash" role="dialog" aria-modal="true" aria-label="Bienvenida Cine de Terror">
+      <div class="splash-inner">
+        <h1 class="brand">Cine de <span class="blood">Terror</span></h1>
+        <p class="tagline">Apaga las luces… y disfruta el <em>catálogo</em> de pesadillas.</p>
+        <div class="cut"></div>
+        <button id="enterBtn" class="enter" aria-controls="app" aria-label="Entrar al catálogo">
+          Entrar al catálogo
+        </button>
+        <div class="links" aria-hidden="true">
+          <span>🎬 Películas</span> · <span>🎭 Directores</span> · <span>🏢 Productoras</span>
+        </div>
+      </div>
+    </div>
+    <div id="app"></div>
+    <script>
+      (function(){
+        const splash = document.getElementById('splash');
+        const btn = document.getElementById('enterBtn');
+        const closeSplash = () => {
+          if (!splash) return;
+          splash.classList.add('hide');
+          setTimeout(() => splash.remove(), 650);
+        };
+        btn?.addEventListener('click', closeSplash);
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') closeSplash();
+        });
+        
+        window.addEventListener('app:ready', closeSplash);
+        setTimeout(closeSplash, 9000);
+      })();
+    </script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

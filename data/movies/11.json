@@ -1,0 +1,12 @@
+{
+  "title": "Get Out",
+  "year": 2017,
+  "duration_min": 104,
+  "rating": 7.7,
+  "synopsis": "Una visita familiar revela una siniestra conspiración.",
+  "posterUrl": "https://example.com/posters/get-out.jpg",
+  "producer": "Blumhouse Productions",
+  "directors": [
+    "Jordan Peele"
+  ]
+}

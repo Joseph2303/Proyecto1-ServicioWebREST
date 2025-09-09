@@ -1,0 +1,12 @@
+{
+  "title": "Midsommar",
+  "year": 2019,
+  "duration_min": 148,
+  "rating": 7.1,
+  "synopsis": "Un festival sueco se torna una pesadilla ritual.",
+  "posterUrl": "https://example.com/posters/midsommar.jpg",
+  "producer": "A24",
+  "directors": [
+    "Ari Aster"
+  ]
+}

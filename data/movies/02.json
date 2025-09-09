@@ -1,0 +1,12 @@
+{
+  "title": "The Thing",
+  "year": 1982,
+  "duration_min": 109,
+  "rating": 8.2,
+  "synopsis": "Una entidad alienígena cambia de forma en la Antártida.",
+  "posterUrl": "https://example.com/posters/the-thing.jpg",
+  "producer": "Universal Pictures",
+  "directors": [
+    "John Carpenter"
+  ]
+}

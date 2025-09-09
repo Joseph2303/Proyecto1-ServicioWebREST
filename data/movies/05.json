@@ -1,0 +1,12 @@
+{
+  "title": "The Conjuring",
+  "year": 2013,
+  "duration_min": 112,
+  "rating": 7.5,
+  "synopsis": "Investigadores paranormales enfrentan una presencia demoníaca.",
+  "posterUrl": "https://example.com/posters/the-conjuring.jpg",
+  "producer": "New Line Cinema",
+  "directors": [
+    "James Wan"
+  ]
+}

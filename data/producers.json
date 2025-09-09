@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Blumhouse Productions",
+    "country": "USA",
+    "foundedYear": 2000,
+    "logoUrl": "https://example.com/producers/blumhouse.jpg"
+  },
+  {
+    "name": "New Line Cinema",
+    "country": "USA",
+    "foundedYear": 1967,
+    "logoUrl": "https://example.com/producers/new-line-cinema.jpg"
+  },
+  {
+    "name": "A24",
+    "country": "USA",
+    "foundedYear": 2012,
+    "logoUrl": "https://example.com/producers/a24.jpg"
+  },
+  {
+    "name": "Lionsgate",
+    "country": "USA",
+    "foundedYear": 1997,
+    "logoUrl": "https://example.com/producers/lionsgate.jpg"
+  },
+  {
+    "name": "Universal Pictures",
+    "country": "USA",
+    "foundedYear": 1912,
+    "logoUrl": "https://example.com/producers/universal.jpg"
+  },
+  {
+    "name": "Hammer Film Productions",
+    "country": "UK",
+    "foundedYear": 1934,
+    "logoUrl": "https://example.com/producers/hammer.jpg"
+  }
+]

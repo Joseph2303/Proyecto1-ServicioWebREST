@@ -1,0 +1,12 @@
+{
+  "title": "Pan's Labyrinth",
+  "year": 2006,
+  "duration_min": 118,
+  "rating": 8.2,
+  "synopsis": "Una niña descubre un mundo fantástico durante la posguerra española.",
+  "posterUrl": "https://example.com/posters/pans-labyrinth.jpg",
+  "producer": "Hammer Film Productions",
+  "directors": [
+    "Guillermo del Toro"
+  ]
+}

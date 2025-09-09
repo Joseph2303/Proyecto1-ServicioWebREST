@@ -1,0 +1,12 @@
+{
+  "title": "Insidious",
+  "year": 2010,
+  "duration_min": 103,
+  "rating": 6.8,
+  "synopsis": "Un niño entra en coma y es acechado por espíritus.",
+  "posterUrl": "https://example.com/posters/insidious.jpg",
+  "producer": "Blumhouse Productions",
+  "directors": [
+    "James Wan"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Halloween",
+  "year": 1978,
+  "duration_min": 91,
+  "rating": 7.7,
+  "synopsis": "Michael Myers aterroriza Haddonfield en la noche de Halloween.",
+  "posterUrl": "https://example.com/posters/halloween.jpg",
+  "producer": "Universal Pictures",
+  "directors": [
+    "John Carpenter"
+  ]
+}

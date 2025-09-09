@@ -1,0 +1,12 @@
+{
+  "title": "Crimson Peak",
+  "year": 2015,
+  "duration_min": 119,
+  "rating": 6.5,
+  "synopsis": "Una mansión gótica oculta macabros secretos.",
+  "posterUrl": "https://example.com/posters/crimson-peak.jpg",
+  "producer": "Universal Pictures",
+  "directors": [
+    "Guillermo del Toro"
+  ]
+}

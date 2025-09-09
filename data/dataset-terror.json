@@ -1,0 +1,224 @@
+{
+  "directors": [
+    {
+      "fullName": "John Carpenter",
+      "nationality": "USA",
+      "birthYear": 1948,
+      "imageUrl": "https://example.com/directors/john-carpenter.jpg"
+    },
+    {
+      "fullName": "Wes Craven",
+      "nationality": "USA",
+      "birthYear": 1939,
+      "imageUrl": "https://example.com/directors/wes-craven.jpg"
+    },
+    {
+      "fullName": "James Wan",
+      "nationality": "Australia",
+      "birthYear": 1977,
+      "imageUrl": "https://example.com/directors/james-wan.jpg"
+    },
+    {
+      "fullName": "Ari Aster",
+      "nationality": "USA",
+      "birthYear": 1986,
+      "imageUrl": "https://example.com/directors/ari-aster.jpg"
+    },
+    {
+      "fullName": "Guillermo del Toro",
+      "nationality": "Mexico",
+      "birthYear": 1964,
+      "imageUrl": "https://example.com/directors/guillermo-del-toro.jpg"
+    },
+    {
+      "fullName": "Jordan Peele",
+      "nationality": "USA",
+      "birthYear": 1979,
+      "imageUrl": "https://example.com/directors/jordan-peele.jpg"
+    }
+  ],
+  "producers": [
+    {
+      "name": "Blumhouse Productions",
+      "country": "USA",
+      "foundedYear": 2000,
+      "logoUrl": "https://example.com/producers/blumhouse.jpg"
+    },
+    {
+      "name": "New Line Cinema",
+      "country": "USA",
+      "foundedYear": 1967,
+      "logoUrl": "https://example.com/producers/new-line-cinema.jpg"
+    },
+    {
+      "name": "A24",
+      "country": "USA",
+      "foundedYear": 2012,
+      "logoUrl": "https://example.com/producers/a24.jpg"
+    },
+    {
+      "name": "Lionsgate",
+      "country": "USA",
+      "foundedYear": 1997,
+      "logoUrl": "https://example.com/producers/lionsgate.jpg"
+    },
+    {
+      "name": "Universal Pictures",
+      "country": "USA",
+      "foundedYear": 1912,
+      "logoUrl": "https://example.com/producers/universal.jpg"
+    },
+    {
+      "name": "Hammer Film Productions",
+      "country": "UK",
+      "foundedYear": 1934,
+      "logoUrl": "https://example.com/producers/hammer.jpg"
+    }
+  ],
+  "movies": [
+    {
+      "title": "Halloween",
+      "year": 1978,
+      "duration_min": 91,
+      "rating": 7.7,
+      "synopsis": "Michael Myers aterroriza Haddonfield en la noche de Halloween.",
+      "posterUrl": "https://example.com/posters/halloween.jpg",
+      "producer": "Universal Pictures",
+      "directors": [
+        "John Carpenter"
+      ]
+    },
+    {
+      "title": "The Thing",
+      "year": 1982,
+      "duration_min": 109,
+      "rating": 8.2,
+      "synopsis": "Una entidad alienígena cambia de forma en la Antártida.",
+      "posterUrl": "https://example.com/posters/the-thing.jpg",
+      "producer": "Universal Pictures",
+      "directors": [
+        "John Carpenter"
+      ]
+    },
+    {
+      "title": "A Nightmare on Elm Street",
+      "year": 1984,
+      "duration_min": 91,
+      "rating": 7.4,
+      "synopsis": "Freddy Krueger acecha los sueños de adolescentes.",
+      "posterUrl": "https://example.com/posters/a-nightmare-on-elm-street.jpg",
+      "producer": "New Line Cinema",
+      "directors": [
+        "Wes Craven"
+      ]
+    },
+    {
+      "title": "Scream",
+      "year": 1996,
+      "duration_min": 111,
+      "rating": 7.4,
+      "synopsis": "Un asesino enmascarado ataca en Woodsboro.",
+      "posterUrl": "https://example.com/posters/scream.jpg",
+      "producer": "Lionsgate",
+      "directors": [
+        "Wes Craven"
+      ]
+    },
+    {
+      "title": "The Conjuring",
+      "year": 2013,
+      "duration_min": 112,
+      "rating": 7.5,
+      "synopsis": "Investigadores paranormales enfrentan una presencia demoníaca.",
+      "posterUrl": "https://example.com/posters/the-conjuring.jpg",
+      "producer": "New Line Cinema",
+      "directors": [
+        "James Wan"
+      ]
+    },
+    {
+      "title": "Insidious",
+      "year": 2010,
+      "duration_min": 103,
+      "rating": 6.8,
+      "synopsis": "Un niño entra en coma y es acechado por espíritus.",
+      "posterUrl": "https://example.com/posters/insidious.jpg",
+      "producer": "Blumhouse Productions",
+      "directors": [
+        "James Wan"
+      ]
+    },
+    {
+      "title": "Hereditary",
+      "year": 2018,
+      "duration_min": 127,
+      "rating": 7.3,
+      "synopsis": "Una familia descubre un oscuro legado tras la muerte de la abuela.",
+      "posterUrl": "https://example.com/posters/hereditary.jpg",
+      "producer": "A24",
+      "directors": [
+        "Ari Aster"
+      ]
+    },
+    {
+      "title": "Midsommar",
+      "year": 2019,
+      "duration_min": 148,
+      "rating": 7.1,
+      "synopsis": "Un festival sueco se torna una pesadilla ritual.",
+      "posterUrl": "https://example.com/posters/midsommar.jpg",
+      "producer": "A24",
+      "directors": [
+        "Ari Aster"
+      ]
+    },
+    {
+      "title": "Crimson Peak",
+      "year": 2015,
+      "duration_min": 119,
+      "rating": 6.5,
+      "synopsis": "Una mansión gótica oculta macabros secretos.",
+      "posterUrl": "https://example.com/posters/crimson-peak.jpg",
+      "producer": "Universal Pictures",
+      "directors": [
+        "Guillermo del Toro"
+      ]
+    },
+    {
+      "title": "Pan's Labyrinth",
+      "year": 2006,
+      "duration_min": 118,
+      "rating": 8.2,
+      "synopsis": "Una niña descubre un mundo fantástico durante la posguerra española.",
+      "posterUrl": "https://example.com/posters/pans-labyrinth.jpg",
+      "producer": "Hammer Film Productions",
+      "directors": [
+        "Guillermo del Toro"
+      ]
+    },
+    {
+      "title": "Get Out",
+      "year": 2017,
+      "duration_min": 104,
+      "rating": 7.7,
+      "synopsis": "Una visita familiar revela una siniestra conspiración.",
+      "posterUrl": "https://example.com/posters/get-out.jpg",
+      "producer": "Blumhouse Productions",
+      "directors": [
+        "Jordan Peele"
+      ]
+    },
+    {
+      "title": "Us",
+      "year": 2019,
+      "duration_min": 116,
+      "rating": 6.8,
+      "synopsis": "Una familia se enfrenta a sus dobles.",
+      "posterUrl": "https://example.com/posters/us.jpg",
+      "producer": "Blumhouse Productions",
+      "directors": [
+        "Jordan Peele"
+      ]
+    }
+  ]
+}

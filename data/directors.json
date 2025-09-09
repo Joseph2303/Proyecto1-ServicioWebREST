@@ -1,0 +1,38 @@
+[
+  {
+    "fullName": "John Carpenter",
+    "nationality": "USA",
+    "birthYear": 1948,
+    "imageUrl": "https://example.com/directors/john-carpenter.jpg"
+  },
+  {
+    "fullName": "Wes Craven",
+    "nationality": "USA",
+    "birthYear": 1939,
+    "imageUrl": "https://example.com/directors/wes-craven.jpg"
+  },
+  {
+    "fullName": "James Wan",
+    "nationality": "Australia",
+    "birthYear": 1977,
+    "imageUrl": "https://example.com/directors/james-wan.jpg"
+  },
+  {
+    "fullName": "Ari Aster",
+    "nationality": "USA",
+    "birthYear": 1986,
+    "imageUrl": "https://example.com/directors/ari-aster.jpg"
+  },
+  {
+    "fullName": "Guillermo del Toro",
+    "nationality": "Mexico",
+    "birthYear": 1964,
+    "imageUrl": "https://example.com/directors/guillermo-del-toro.jpg"
+  },
+  {
+    "fullName": "Jordan Peele",
+    "nationality": "USA",
+    "birthYear": 1979,
+    "imageUrl": "https://example.com/directors/jordan-peele.jpg"
+  }
+]
