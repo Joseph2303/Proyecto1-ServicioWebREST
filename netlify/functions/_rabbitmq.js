@@ -3,8 +3,35 @@ import amqp from "amqplib";
 let connection = null;
 let channel = null;
 
-const RABBITMQ_URL = process.env.RABBITMQ_URL || "amqp://localhost";
-const QUEUE_NAME = "terror_updates";
+// Detecta si corre en entorno serverless (Netlify/AWS Lambda)
+const isServerless = !!process.env.NETLIFY || !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+
+// No uses localhost en producción. Solo permite fallback local en desarrollo.
+const DEFAULT_LOCAL_URL = "amqp://localhost";
+const ENV_URL = process.env.RABBITMQ_URL;
+const RABBITMQ_URL = ENV_URL || (isServerless ? "" : DEFAULT_LOCAL_URL);
+
+const QUEUE_NAME = process.env.RABBITMQ_QUEUE || "terror_updates";
+const CONNECT_TIMEOUT_MS = Number(process.env.RABBITMQ_CONNECT_TIMEOUT_MS || 8000);
+
+function maskUrl(url) {
+  if (!url) return url;
+  try {
+    const u = new URL(url);
+    if (u.username || u.password) {
+      u.username = u.username ? "***" : "";
+      u.password = u.password ? "***" : "";
+    }
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
+async function connectWithTimeout(url) {
+  const to = new Promise((_, rej) => setTimeout(() => rej(new Error(`Timeout conectando a RabbitMQ tras ${CONNECT_TIMEOUT_MS}ms`)), CONNECT_TIMEOUT_MS));
+  return Promise.race([amqp.connect(url), to]);
+}
 
 /**
  * Conecta a RabbitMQ y obtiene el canal
@@ -13,15 +40,30 @@ export async function getChannel() {
   if (channel) return channel;
   
   try {
-    connection = await amqp.connect(RABBITMQ_URL);
+    if (!RABBITMQ_URL) {
+      throw new Error("RabbitMQ no configurado: define la variable de entorno RABBITMQ_URL (usa CloudAMQP o similar).");
+    }
+
+    connection = await connectWithTimeout(RABBITMQ_URL);
     channel = await connection.createChannel();
     await channel.assertQueue(QUEUE_NAME, { durable: true });
-    
-    console.log("✓ Conectado a RabbitMQ");
+
+    // Listeners para reconexión simple
+    connection.on("error", (err) => {
+      console.error("[RabbitMQ] error de conexión:", err?.message);
+      channel = null; connection = null;
+    });
+    connection.on("close", () => {
+      console.warn("[RabbitMQ] conexión cerrada");
+      channel = null; connection = null;
+    });
+
+    console.log("✓ Conectado a RabbitMQ:", maskUrl(RABBITMQ_URL));
     return channel;
   } catch (error) {
-    console.error("Error conectando a RabbitMQ:", error.message);
-    throw error;
+    const msg = `No se pudo conectar a RabbitMQ (${maskUrl(RABBITMQ_URL)}): ${error.message}`;
+    console.error(msg);
+    throw new Error(msg);
   }
 }
 
@@ -67,4 +109,14 @@ export async function closeConnection() {
   if (connection) await connection.close();
   channel = null;
   connection = null;
+}
+
+/** Estado rápido para diagnósticos */
+export function rabbitStatus() {
+  return {
+    configured: !!RABBITMQ_URL,
+    url: RABBITMQ_URL ? maskUrl(RABBITMQ_URL) : null,
+    connected: !!(connection && channel),
+    queue: QUEUE_NAME
+  };
 }
