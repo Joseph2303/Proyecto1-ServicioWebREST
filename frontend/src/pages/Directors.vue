@@ -60,18 +60,33 @@ async function load(){
 
 // ---- CRUD ----
 async function add(){
-  const r = await api.create("directors", form.value);
-  items.value.unshift(normalize(r));
-  form.value = { fullName:"", nationality:"", birthYear:null, imageUrl:"" };
-  // avisa a Movies para refrescar catálogos
-  window.dispatchEvent(new Event('catalog:changed'));
+  try {
+    const r = await api.create("directors", form.value);
+    
+    if (r.queued) {
+      alert("✓ Director agregado a cola. Procesa la cola para ver cambios.");
+      form.value = { fullName:"", nationality:"", birthYear:null, imageUrl:"" };
+      return;
+    }
+    
+    items.value.unshift(normalize(r));
+    form.value = { fullName:"", nationality:"", birthYear:null, imageUrl:"" };
+    window.dispatchEvent(new Event('catalog:changed'));
+  } catch (e: any) {
+    alert(e?.message || "Error al crear director");
+  }
 }
 
 async function delItem(id: string){
   if (!confirm("¿Eliminar este director?")) return;
-  await api.remove("directors", id);
-  items.value = items.value.filter(x=>x._id!==id);
-  window.dispatchEvent(new Event('catalog:changed'));
+  try {
+    await api.remove("directors", id);
+    alert("✓ Eliminación procesada.");
+    items.value = items.value.filter(x=>x._id!==id);
+    window.dispatchEvent(new Event('catalog:changed'));
+  } catch (e: any) {
+    alert(e?.message || "Error al eliminar");
+  }
 }
 
 function startEdit(d:any){
@@ -92,6 +107,14 @@ async function saveEdit(){
     delete (payload as any)._id;
 
     const updated = await api.update("directors", id, payload);
+
+    // Si está en cola
+    if (updated && updated.queued) {
+      alert("✓ Cambios enviados a cola. Procesa la cola para aplicar.");
+      cancelEdit();
+      window.dispatchEvent(new Event('catalog:changed'));
+      return;
+    }
 
     // si el backend devuelve el doc actualizado, úsalo
     let fresh = updated && updated._id ? normalize(updated) : null;

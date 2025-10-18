@@ -1,24 +1,22 @@
 {
-  "name": "frontend",
+  "name": "proyecto-terror-backend",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "netlify dev",
+    "build": "npm --prefix frontend ci && npm --prefix frontend run build",
+    "seed": "node seed.mjs",
+    "create-user": "node create-user.mjs"
   },
   "dependencies": {
     "dotenv": "^17.2.2",
     "mongodb": "^6.19.0",
-    "vue": "^3.5.21"
+    "amqplib": "^0.10.5",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3"
   },
   "devDependencies": {
-    "@types/vue": "^1.0.31",
-    "@vitejs/plugin-vue": "^5.1.2",
-    "@vue/compiler-sfc": "^3.5.21",
-    "@vue/runtime-dom": "^3.5.21",
-    "typescript": "^5.6.2",
-    "vite": "^5.4.8"
+    "netlify-cli": "^17.37.4"
   }
 }

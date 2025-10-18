@@ -2,18 +2,68 @@
 import Movies from './pages/Movies.vue'
 import Directors from './pages/Directors.vue'
 import Producers from './pages/Producers.vue'
-import { ref } from 'vue'
+import Login from './pages/Login.vue'
+import { ref, onMounted } from 'vue'
+import { auth, api } from './lib/api'
 
 const tab = ref<'movies' | 'directors' | 'producers'>('movies')
+const isAuthenticated = ref(false)
+const user = ref<any>(null)
+const processingQueue = ref(false)
+
+function checkAuth() {
+  isAuthenticated.value = auth.isAuthenticated()
+  user.value = auth.getUser()
+}
+
+function handleAuthenticated() {
+  checkAuth()
+}
+
+function logout() {
+  auth.logout()
+  checkAuth()
+}
+
+async function processQueue() {
+  if (processingQueue.value) return
+  
+  try {
+    processingQueue.value = true
+    const result = await api.processQueue()
+    alert(result.message || `Procesados: ${result.processed}`)
+    // Recargar datos
+    window.location.reload()
+  } catch (e: any) {
+    alert(e.message || "Error procesando cola")
+  } finally {
+    processingQueue.value = false
+  }
+}
+
+onMounted(() => {
+  checkAuth()
+})
 </script>
 
 <template>
-  <main class="container">
+  <!-- Pantalla de login si no está autenticado -->
+  <Login v-if="!isAuthenticated" @authenticated="handleAuthenticated" />
+
+  <!-- Aplicación principal si está autenticado -->
+  <main v-else class="container">
     <!-- Marquesina / Header -->
     <header class="marquee">
       <div>
         <h1 class="neon">Cine del Pánico</h1>
         <p class="subtitle">Cartelera & catálogo terror</p>
+      </div>
+      <div class="userInfo">
+        <span>👤 {{ user?.username }}</span>
+        <button class="btnLogout" @click="logout">Salir</button>
+        <button class="btnProcess" @click="processQueue" :disabled="processingQueue">
+          {{ processingQueue ? '⏳ Procesando...' : '🔄 Procesar Cola' }}
+        </button>
       </div>
     </header>
 
@@ -94,14 +144,49 @@ body::before{
 
 /* Marquesina / header */
 .marquee{
-  display:flex; align-items:center; justify-content:center; text-align:center;
+  display:flex; align-items:center; justify-content:space-between; 
   padding:28px 16px 22px; margin:18px 0 10px; position:relative;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 .marquee::after, .marquee::before{
   content:""; position:absolute; left:0; right:0; height:2px; opacity:.45;
   background:linear-gradient(90deg, transparent, var(--accent), transparent);
 }
 .marquee::before{ top:0; } .marquee::after{ bottom:0; }
+
+.userInfo{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+}
+.userInfo span{
+  color:var(--fg); font-size:14px; font-weight:600;
+}
+.btnLogout, .btnProcess{
+  padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600;
+  cursor:pointer; transition: all 0.2s ease; border:1px solid;
+}
+.btnLogout{
+  background:linear-gradient(180deg, #2a1416, #1a0b0d);
+  border-color:rgba(229,9,20,.4);
+  color:#fff;
+}
+.btnLogout:hover{
+  border-color:rgba(229,9,20,.7);
+  transform:translateY(-1px);
+}
+.btnProcess{
+  background:linear-gradient(180deg, #1b2a26, #0d1a16);
+  border-color:rgba(34,197,94,.4);
+  color:#a7f3d0;
+}
+.btnProcess:hover:not(:disabled){
+  border-color:rgba(34,197,94,.7);
+  transform:translateY(-1px);
+}
+.btnProcess:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+}
 
 .neon{
   font-family:"Cinzel Decorative", serif;

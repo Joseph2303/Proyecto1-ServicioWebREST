@@ -1,6 +1,7 @@
 import { MongoClient } from "mongodb";
 import fs from "node:fs/promises";
 import path from "node:path";
+import bcrypt from "bcryptjs";
 import 'dotenv/config';
 
 
@@ -97,8 +98,26 @@ async function main() {
 
   await cMovies.insertMany(movies);
 
-  console.log(`Importados => directores: ${dirs.length}, productoras: ${prods.length}, películas: ${movies.length}`);
+  console.log(`✅ Importados => directores: ${dirs.length}, productoras: ${prods.length}, películas: ${movies.length}`);
+
+  // Crear usuario admin por defecto
+  const cUsers = db.collection("users");
+  const existingAdmin = await cUsers.findOne({ username: "admin" });
+  
+  if (!existingAdmin) {
+    const hashedPassword = await bcrypt.hash("admin123", 10);
+    await cUsers.insertOne({
+      username: "admin",
+      password: hashedPassword,
+      createdAt: new Date()
+    });
+    console.log("✅ Usuario admin creado (username: admin, password: admin123)");
+  } else {
+    console.log("ℹ️  Usuario admin ya existe");
+  }
+
   await client.close();
+  console.log("\n🎉 Base de datos lista! Ahora ejecuta: npm run dev");
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

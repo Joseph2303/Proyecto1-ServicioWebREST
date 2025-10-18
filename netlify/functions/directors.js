@@ -1,4 +1,6 @@
 import { getDb, ObjectId, reply } from "./_db.js";
+import { sendToQueue } from "./_rabbitmq.js";
+import { requireAuth } from "./_auth.js";
 
 export async function handler(event) {
   if (event.httpMethod === "OPTIONS") return reply.noContent();
@@ -13,6 +15,7 @@ export async function handler(event) {
   try {
     switch (event.httpMethod) {
       case "GET": {
+        // Las consultas NO requieren autenticación y van directo a DB
         if (hasId) {
           const doc = await col.findOne({ _id: new ObjectId(id) });
           return doc ? reply.ok(doc) : reply.notFound();
@@ -22,43 +25,90 @@ export async function handler(event) {
       }
 
       case "POST": {
+        // Requiere autenticación
+        const user = requireAuth(event);
+        
         const data = JSON.parse(event.body || "{}");
         const required = ["fullName", "nationality", "birthYear", "imageUrl"];
         for (const k of required) if (data[k] == null || data[k] === "") return reply.bad(`Falta ${k}`);
 
         data.birthYear = Number(data.birthYear);
 
-        const { insertedId } = await col.insertOne(data);
-        const created = await col.findOne({ _id: insertedId });
-        // Notifica a front opcionalmente con SSE/Webhooks; aquí solo devolvemos el doc
-        return reply.created(created);
+        // Enviar a RabbitMQ en vez de insertar directamente
+        await sendToQueue({
+          operation: "CREATE",
+          collection: "directors",
+          data,
+          userId: user.userId
+        });
+
+        return reply.ok({ 
+          message: "Director enviado a cola para procesamiento",
+          queued: true,
+          data 
+        });
       }
 
       case "PUT":
       case "PATCH": {
+        // Requiere autenticación
+        const user = requireAuth(event);
+        
         if (!hasId) return reply.bad("Falta id");
         const data = JSON.parse(event.body || "{}");
         delete data._id;
         if (data.birthYear != null) data.birthYear = Number(data.birthYear);
 
-        const { value } = await col.findOneAndUpdate(
-          { _id: new ObjectId(id) },
-          { $set: data },
-          { returnDocument: "after" }
-        );
-        return value ? reply.ok(value) : reply.notFound();
+        // Enviar a RabbitMQ
+        await sendToQueue({
+          operation: "UPDATE",
+          collection: "directors",
+          id,
+          data,
+          userId: user.userId
+        });
+
+        return reply.ok({ 
+          message: "Actualización enviada a cola",
+          queued: true,
+          id,
+          data 
+        });
       }
 
       case "DELETE": {
+        // Requiere autenticación
+        const user = requireAuth(event);
+        
         if (!hasId) return reply.bad("Falta id");
-        const { deletedCount } = await col.deleteOne({ _id: new ObjectId(id) });
-        return deletedCount ? reply.noContent() : reply.notFound();
+
+        // Enviar a RabbitMQ
+        await sendToQueue({
+          operation: "DELETE",
+          collection: "directors",
+          id,
+          userId: user.userId
+        });
+
+        return reply.ok({ 
+          message: "Eliminación enviada a cola",
+          queued: true,
+          id 
+        });
       }
 
       default:
         return reply.bad("Método no soportado");
     }
   } catch (e) {
+    // Si es error de autenticación, devolver 401
+    if (e.message.includes("autorizado") || e.message.includes("Token")) {
+      return { 
+        statusCode: 401, 
+        headers: reply.ok({}).headers,
+        body: JSON.stringify({ error: e.message }) 
+      };
+    }
     return reply.error(e);
   }
 }

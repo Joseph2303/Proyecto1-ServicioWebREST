@@ -1,4 +1,6 @@
 import { getDb, ObjectId, reply } from "./_db.js";
+import { sendToQueue } from "./_rabbitmq.js";
+import { requireAuth } from "./_auth.js";
 
 /* ========== Helpers de IDs y normalización ========== */
 const toOid = (v) => (ObjectId.isValid(v) ? new ObjectId(v) : null);
@@ -87,6 +89,8 @@ export async function handler(event) {
 
       /* ------ CREAR ------ */
       case "POST": {
+        const user = requireAuth(event);
+        
         const data = JSON.parse(event.body || "{}");
         const required = ["title", "year", "duration_min", "rating", "synopsis", "posterUrl", "producerId"];
         for (const k of required) {
@@ -100,14 +104,25 @@ export async function handler(event) {
         data.producerId = storeRef(data.producerId);
         if (Array.isArray(data.directorIds)) data.directorIds = data.directorIds.map(storeRef);
 
-        const { insertedId } = await col.insertOne(data);
-        const created = await col.findOne({ _id: insertedId });
-        return reply.created(toClient(created));
+        await sendToQueue({
+          operation: "CREATE",
+          collection: "movies",
+          data,
+          userId: user.userId
+        });
+
+        return reply.ok({ 
+          message: "Película enviada a cola",
+          queued: true,
+          data 
+        });
       }
 
       /* ------ ACTUALIZAR ------ */
       case "PUT":
       case "PATCH": {
+        const user = requireAuth(event);
+        
         if (!hasId) return reply.bad("Falta id");
         const data = JSON.parse(event.body || "{}");
         delete data._id;
@@ -119,31 +134,53 @@ export async function handler(event) {
         if (data.producerId != null) data.producerId = storeRef(data.producerId);
         if (Array.isArray(data.directorIds)) data.directorIds = data.directorIds.map(storeRef);
 
-        const { value } = await col.findOneAndUpdate(
-          { $or: [{ _id: toOid(id) }, { _id: id }] },
-          { $set: data },
-          { returnDocument: "after" }
-        );
+        await sendToQueue({
+          operation: "UPDATE",
+          collection: "movies",
+          id,
+          data,
+          userId: user.userId
+        });
 
-        if (value) return reply.ok(toClient(value));
-
-        // ⚠️ Si no lo encontró, devuelve 200 para no ensuciar consola,
-        // e informa al cliente para que recargue la lista si quiere.
-        return reply.ok({ updated: 0, notFound: true, id });
+        return reply.ok({ 
+          message: "Actualización enviada a cola",
+          queued: true,
+          id,
+          data 
+        });
       }
 
       /* ------ ELIMINAR ------ */
       case "DELETE": {
+        const user = requireAuth(event);
+        
         if (!hasId) return reply.bad("Falta id");
-        const { deletedCount } = await col.deleteOne({ $or: [{ _id: toOid(id) }, { _id: id }] });
-        // Si prefieres no 404ear, puedes devolver 204 siempre:
-        return deletedCount ? reply.noContent() : reply.noContent();
+
+        await sendToQueue({
+          operation: "DELETE",
+          collection: "movies",
+          id,
+          userId: user.userId
+        });
+
+        return reply.ok({ 
+          message: "Eliminación enviada a cola",
+          queued: true,
+          id 
+        });
       }
 
       default:
         return reply.bad("Método no soportado");
     }
   } catch (e) {
+    if (e.message.includes("autorizado") || e.message.includes("Token")) {
+      return { 
+        statusCode: 401, 
+        headers: reply.ok({}).headers,
+        body: JSON.stringify({ error: e.message }) 
+      };
+    }
     return reply.error(e);
   }
 }

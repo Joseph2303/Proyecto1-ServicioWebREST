@@ -117,6 +117,14 @@ async function add() {
     const payload = { ...form.value };
     payload.directorIds = Array.isArray(payload.directorIds) ? payload.directorIds : [];
     const created = await api.create("movies", payload);
+    
+    // Si está en cola, mostrar mensaje y no agregar aún
+    if (created.queued) {
+      alert("✓ Película agregada a la cola de procesamiento. Haz clic en 'Procesar Cola' para aplicar cambios.");
+      form.value = { title:"", year:null, duration_min:null, rating:null, synopsis:"", posterUrl:"", producerId:"", directorIds:[] };
+      return;
+    }
+    
     movies.value.unshift(normalizeMovie(created));
     form.value = { title:"", year:null, duration_min:null, rating:null, synopsis:"", posterUrl:"", producerId:"", directorIds:[] };
   } catch (e:any) {
@@ -127,8 +135,16 @@ async function add() {
 // borrar
 async function delItem(id: string) {
   if (!confirm("¿Eliminar esta película?")) return;
-  await api.remove("movies", id);
-  movies.value = movies.value.filter(m => m._id !== id);
+  try {
+    await api.remove("movies", id);
+    
+    // Nota: api.remove ahora puede devolver un mensaje en cola
+    // Por simplicidad, mostramos mensaje al usuario
+    alert("✓ Eliminación procesada. Si no ves cambios, procesa la cola.");
+    movies.value = movies.value.filter(m => m._id !== id);
+  } catch (e: any) {
+    alert(e?.message || "Error al eliminar");
+  }
 }
 
 // editar (abre modal)
@@ -161,6 +177,14 @@ async function saveEdit() {
     delete (payload as any)._id;
 
     const updated = await api.update("movies", id, payload);
+    
+    // Si está en cola
+    if (updated && updated.queued) {
+      alert("✓ Cambios enviados a cola. Procesa la cola para aplicar.");
+      cancelEdit();
+      return;
+    }
+    
     const idx = movies.value.findIndex(m => m._id === id);
 
     let fresh = updated && updated._id ? normalizeMovie(updated) : null;
